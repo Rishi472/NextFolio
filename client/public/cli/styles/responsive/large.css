@@ -1,0 +1,15 @@
+/* large.css */
+/* Add more styling if needed */
+body {
+    background: #ffffff;
+  }
+  
+  .container {
+    width: 80%;
+  }
+  
+  #command-line {
+    width: 70%;
+    margin: 0 auto;
+  }
+  

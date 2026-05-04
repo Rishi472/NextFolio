@@ -1,0 +1,15 @@
+/* medium.css */
+/* Add more styling if needed */
+body {
+    background: #ffffff;
+  }
+  
+  .container {
+    width: 90%;
+  }
+  
+  #command-line {
+    width: 90%;
+    margin: 0 auto;
+  }
+  

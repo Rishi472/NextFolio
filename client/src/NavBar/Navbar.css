@@ -1,0 +1,47 @@
+.logo {
+  width: 100px;
+  height: auto;
+}
+.navbar {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb, #7c3aed);
+  padding: 15px 30px;
+  border-radius: 12px;
+  justify-content: space-between; /* logo left, buttons right */
+  align-items: center; /* vertical alignment */
+  display: flex;
+
+
+  /* 3D depth */
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  backdrop-filter: blur(10px);
+}
+
+.navbar a {
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+
+  /* subtle 3D text */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #c4b5fd;
+
+  transform: translateY(-2px);
+
+  text-shadow: 
+    0 4px 10px rgba(124, 58, 237, 0.8);
+}
+
+.navbar .navbar-links {
+  display: flex;        /* puts buttons in a row */
+  align-items: center;  /* vertical alignment */
+  gap: 15px; 
+}
+

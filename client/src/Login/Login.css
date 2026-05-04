@@ -1,0 +1,22 @@
+.auth-container {
+  width: 320px;
+  margin: 100px auto;
+  padding: 30px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.auth-btn, .google-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+
+  border: none;
+  border-radius: 8px;
+
+  cursor: pointer;
+}

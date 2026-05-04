@@ -1,0 +1,63 @@
+.menu-btn {
+  margin-top: 10px;
+  margin-left: 20px;
+
+  font-size: 20px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+
+  background: linear-gradient(180deg, #1e3a8a, #2563eb, #7c3aed);
+
+  transform: translateX(-100%);   /* 👈 fully hidden */
+  transition: transform 0.3s ease;
+}
+
+/* When open */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+
+/* When open */
+.sidebar.open {
+  left: 0;
+}
+
+/* Menu items */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 60px;
+}
+
+.sidebar li {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  background: rgba(255,255,255,0.1);
+  color: white;
+
+  transition: 0.2s;
+}
+
+.sidebar li:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateX(5px);
+}

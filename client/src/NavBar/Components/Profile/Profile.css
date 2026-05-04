@@ -1,0 +1,17 @@
+.profile-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 2px solid rgba(255,255,255,0.3);
+
+  box-shadow: 0 4px 10px rgba(124,58,237,0.6);
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profile-pic:hover {
+  transform: scale(1.1);
+}

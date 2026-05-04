@@ -1,0 +1,6 @@
+{
+  "name": "CLI Portfolio",
+  "short_name": "Portfolio",
+  "start_url": "/cli/index.html",
+  "display": "standalone"
+}
