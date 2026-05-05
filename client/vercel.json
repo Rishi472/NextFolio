@@ -3,8 +3,8 @@
   "env": {
     "VITE_API_URL": "https://next-folio-silk.vercel.app",
     "VITE_GOOGLE_CLIENT_ID": "155142015103-5dmdn79o3u606n21alfepsdu787rbg0c.apps.googleusercontent.com",
-    "VITE_ENABLE_GOOGLE_LOGIN": "false",
-    "VITE_APP_VERSION": "workspace-gate-v3"
+    "VITE_ENABLE_GOOGLE_LOGIN": "true",
+    "VITE_APP_VERSION": "google-login-v1"
   },
   "headers": [
     {

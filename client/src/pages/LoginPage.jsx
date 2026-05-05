@@ -7,7 +7,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import logo from '../assets/NextFolioLogo.png';
 import { API_URL, getApiErrorMessage } from '../lib/api';
-import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
+import { HAS_GOOGLE_OAUTH, getGoogleAuthErrorMessage } from '../lib/googleAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -122,7 +122,8 @@ export default function LoginPage() {
     onSuccess: async (tokenResponse) => {
       processBackendAuth(`${API_URL}/auth/google`, { accessToken: tokenResponse.access_token });
     },
-    onError: () => setError('Google login failed. Please try again.')
+    onError: (googleError) => setError(getGoogleAuthErrorMessage(googleError)),
+    onNonOAuthError: (googleError) => setError(getGoogleAuthErrorMessage(googleError))
   });
 
   const startGoogleLogin = () => {

@@ -5,7 +5,7 @@ import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
 import Input from './Input';
 import { API_URL, getApiErrorMessage } from '../lib/api';
-import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
+import { HAS_GOOGLE_OAUTH, getGoogleAuthErrorMessage } from '../lib/googleAuth';
 
 export default function AuthModal() {
   const { showAuthModal, setShowAuthModal } = useUIStore();
@@ -117,7 +117,8 @@ export default function AuthModal() {
       // Send the access token to our backend
       processBackendAuth(`${API_URL}/auth/google`, { accessToken: tokenResponse.access_token });
     },
-    onError: () => setError('Google login failed. Please try again.')
+    onError: (googleError) => setError(getGoogleAuthErrorMessage(googleError)),
+    onNonOAuthError: (googleError) => setError(getGoogleAuthErrorMessage(googleError))
   });
 
   const startGoogleLogin = () => {
