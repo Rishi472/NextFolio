@@ -23,13 +23,21 @@ export function normalizeResumeForPortfolio(resumeData = {}) {
     linkedin: clean(personal.linkedin || resumeData.linkedin),
     github: clean(personal.github || resumeData.github),
     skills: list(resumeData.skills).map((skill) => (typeof skill === 'string' ? skill : clean(skill.name))).filter(Boolean),
-    projects: list(resumeData.projects).map((project, index) => ({
-      id: project.id || index + 1,
-      title: clean(project.title || project.name) || `Project ${index + 1}`,
-      description: clean(project.description || project.summary),
-      link: clean(project.link || project.demoLink || project.githubLink || project.url),
-      date: clean(project.date || project.timeline),
-    })),
+    projects: list(resumeData.projects).map((project, index) => {
+      const bulletDescription = list(project.bulletPoints)
+        .map((point) => clean(point))
+        .filter(Boolean)
+        .join(' ');
+
+      return {
+        id: project.id || index + 1,
+        title: clean(project.title || project.name) || `Project ${index + 1}`,
+        description: clean(project.description || project.summary) || bulletDescription,
+        link: clean(project.link || project.demoLink || project.githubLink || project.url),
+        date: clean(project.date || project.timeline),
+        status: clean(project.status || project.projectStatus || project.state),
+      };
+    }),
     experience: list(resumeData.experience).map((item, index) => ({
       id: item.id || index + 1,
       title: clean(item.jobTitle || item.title || item.role || item.position) || `Experience ${index + 1}`,

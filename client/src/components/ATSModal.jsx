@@ -62,7 +62,14 @@ export default function ATSModal() {
         a.click();
         window.URL.revokeObjectURL(url);
       } else {
-        alert("Failed to generate PDF. Make sure you have uploaded a resume first.");
+        let message = 'Failed to generate PDF. Make sure you have uploaded a resume first.';
+        try {
+          const result = await res.json();
+          message = result.error || result.message || message;
+        } catch {
+          // Keep the default message when the server does not return JSON.
+        }
+        alert(message);
       }
     } catch (e) { console.error(e); }
     setIsGenerating(false);

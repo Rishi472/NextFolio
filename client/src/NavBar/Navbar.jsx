@@ -3,16 +3,20 @@ import logo from '../assets/NextFolioLogo.png'
 import './Navbar.css'
 import Button from './Components/Button/Button'
 import Profile from './Components/Profile/Profile'
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="navbar">
-      <img src={logo} alt="NextFolio" className="logo" />
-      <Button text="About" />
-      <Button text="Contact" />
+      <div className="logo-tooltip" tabIndex={0} aria-label="NextFolio logo">
+        <img src={logo} alt="NextFolio" className="logo" />
+        <span>BUILD TODAY. IMPRESS TOMORROW.</span>
+      </div>
+      <Button text="About" onClick={() => navigate('/about')} />
+      <Button text="Contact" onClick={() => navigate('/contact')} />
       <Button text="Log In / Sign Up" />
       <Profile/>
 

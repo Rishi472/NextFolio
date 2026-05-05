@@ -2,6 +2,19 @@ import { useResumeStore } from '../store';
 import Badge from '../components/Badge';
 import { educationDisplay } from '../utils/education';
 
+function profileUrl(value, baseUrl) {
+  const profile = typeof value === 'string' ? value.trim() : '';
+  if (!profile) return '';
+  if (/^https?:\/\//i.test(profile)) return profile;
+  if (profile.includes('.')) return `https://${profile}`;
+  return `${baseUrl}${profile.replace(/^@/, '')}`;
+}
+
+function phoneHref(phone) {
+  const dialable = typeof phone === 'string' ? phone.replace(/[^\d+]/g, '') : '';
+  return dialable ? `tel:${dialable}` : '';
+}
+
 export default function ResumePreview() {
   const { resumeData } = useResumeStore();
   const hasResumeData = Boolean(
@@ -31,19 +44,25 @@ export default function ResumePreview() {
         </h1>
         <div className="flex justify-center gap-4 flex-wrap text-sm text-gray-600">
           {resumeData.personal.email && (
-            <span>{resumeData.personal.email}</span>
+            <a className="hover:text-indigo-600" href={`mailto:${resumeData.personal.email}`}>{resumeData.personal.email}</a>
           )}
           {resumeData.personal.phone && (
             <span>•</span>
           )}
           {resumeData.personal.phone && (
-            <span>{resumeData.personal.phone}</span>
+            <a className="hover:text-indigo-600" href={phoneHref(resumeData.personal.phone)}>{resumeData.personal.phone}</a>
           )}
-          {resumeData.personal.location && (
+          {resumeData.personal.linkedin && (
             <span>•</span>
           )}
-          {resumeData.personal.location && (
-            <span>{resumeData.personal.location}</span>
+          {resumeData.personal.linkedin && (
+            <a className="hover:text-indigo-600" href={profileUrl(resumeData.personal.linkedin, 'https://www.linkedin.com/in/')} target="_blank" rel="noreferrer">{resumeData.personal.linkedin}</a>
+          )}
+          {resumeData.personal.github && (
+            <span>•</span>
+          )}
+          {resumeData.personal.github && (
+            <a className="hover:text-indigo-600" href={profileUrl(resumeData.personal.github, 'https://github.com/')} target="_blank" rel="noreferrer">{resumeData.personal.github}</a>
           )}
         </div>
       </div>}
@@ -148,8 +167,8 @@ export default function ResumePreview() {
                     <span className="font-semibold">Technologies:</span> {proj.technologies.join(', ')}
                   </p>
                 )}
-                {proj.description && (
-                  <p className="text-gray-700 text-sm mt-1 leading-relaxed">{proj.description}</p>
+                {(proj.description || (!proj.bulletPoints?.length && proj.summary)) && (
+                  <p className="text-gray-700 text-sm mt-1 leading-relaxed">{proj.description || proj.summary}</p>
                 )}
                 {proj.bulletPoints && proj.bulletPoints.length > 0 && (
                   <ul className="mt-1.5 space-y-0.5">

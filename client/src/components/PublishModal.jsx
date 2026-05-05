@@ -5,7 +5,10 @@ import Button from './Button';
 
 export default function PublishModal() {
   const { showPublishModal, setShowPublishModal } = useUIStore();
-  const { user } = useResumeStore();
+  const { user, resumeData } = useResumeStore();
+  const theme = useUIStore((state) => state.theme);
+  const colorPalette = useUIStore((state) => state.colorPalette);
+  const layoutStyle = useUIStore((state) => state.layoutStyle);
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -23,7 +26,14 @@ export default function PublishModal() {
 
   const handlePublish = () => {
     setPublishing(true);
-    // Simulate deployment process
+    localStorage.setItem(`nextfolio_published_${usernameSlug}`, JSON.stringify({
+      resumeData,
+      theme,
+      colorPalette,
+      layoutStyle,
+      publishedAt: new Date().toISOString(),
+    }));
+
     setTimeout(() => {
       setPublishing(false);
       setPublished(true);
@@ -31,7 +41,7 @@ export default function PublishModal() {
   };
 
   const usernameSlug = user ? user.name.toLowerCase().replace(/[^a-z0-9]/g, '') : 'demo';
-  const liveUrl = `https://${usernameSlug}.nextfolio.app`;
+  const liveUrl = `${window.location.origin}/portfolio/${usernameSlug}`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(liveUrl);
@@ -80,7 +90,7 @@ export default function PublishModal() {
               <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
                 It's Live! <Sparkles className="w-6 h-6 text-yellow-500" />
               </h2>
-              <p className="text-gray-500 mb-8">Your amazing portfolio is now accessible to the world.</p>
+              <p className="text-gray-500 mb-8">Your portfolio is ready at a working share link for this app.</p>
               
               <div className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6 flex flex-col items-center">
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Your Live URL</span>
@@ -113,13 +123,13 @@ export default function PublishModal() {
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Publish Portfolio</h2>
               <p className="text-gray-500 mb-8">
-                Ready to share your work with the world? We'll host your portfolio on a blazing-fast global edge network.
+                Ready to share your work? We'll create a working portfolio link from your current resume data.
               </p>
               
               {!user && (
                 <div className="w-full bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-lg text-sm mb-6 flex items-start text-left gap-2">
                   <span className="mt-0.5">⚠️</span> 
-                  <span>You are not logged in. Your portfolio will be published to a temporary URL that expires in 24 hours.</span>
+                  <span>You are not logged in. Your portfolio will be published to a local demo link on this browser.</span>
                 </div>
               )}
 

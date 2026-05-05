@@ -1,4 +1,4 @@
-import { Plus, Trash2, Upload, Bot, AlertCircle, Pencil, ExternalLink, Github, X } from 'lucide-react';
+import { Plus, Trash2, Upload, Bot, AlertCircle, Pencil, ExternalLink, Code, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useResumeStore, useUIStore } from '../store';
@@ -44,6 +44,18 @@ export default function ResumeBuilder() {
   const [showAchievementForm, setShowAchievementForm] = useState(false);
   const [showCertificationForm, setShowCertificationForm] = useState(false);
   const [parseError, setParseError] = useState('');
+  const hasResumeContent = Boolean(
+    resumeData.personal.fullName ||
+      resumeData.personal.email ||
+      resumeData.personal.phone ||
+      resumeData.personal.summary ||
+      resumeData.experience.length ||
+      resumeData.education.length ||
+      resumeData.skills.length ||
+      resumeData.projects.length ||
+      resumeData.achievements.length ||
+      resumeData.certifications.length
+  );
 
   // Debounced auto-save
   useEffect(() => {
@@ -74,13 +86,20 @@ export default function ResumeBuilder() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const handleUploadButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div className="space-y-6 h-full flex flex-col">
       {/* AI Upload Button - Prominently displayed */}
       <Card glassy className="p-4 border-2 border-indigo-200 border-dashed bg-indigo-50/50 flex flex-col items-center justify-center text-center relative overflow-hidden">
         {isSaving && <div className="absolute top-2 right-2 text-xs text-indigo-500 animate-pulse">Saving...</div>}
         <Bot className="w-8 h-8 text-indigo-600 mb-2" />
-        <h3 className="font-bold text-brand-dark">Upload Resume</h3>
+        <h3 className="font-bold text-brand-dark">Upload Your Resume</h3>
         <p className="text-sm text-gray-600 mb-4">Let our AI parse your data and auto-fill the forms.</p>
         
         <input 
@@ -91,7 +110,7 @@ export default function ResumeBuilder() {
           onChange={handleFileChange}
         />
         
-        <Button onClick={() => fileInputRef.current?.click()} disabled={isParsing} className="w-full flex justify-center items-center gap-2">
+        <Button onClick={handleUploadButtonClick} disabled={isParsing} className="w-full flex justify-center items-center gap-2">
           {isParsing ? (
             <div className="flex space-x-1 items-center">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse-soft"></div>
@@ -101,7 +120,8 @@ export default function ResumeBuilder() {
             </div>
           ) : (
             <>
-              <Upload className="w-4 h-4" /> Auto-fill with AI
+              <Upload className="w-4 h-4" />
+              {hasResumeContent ? 'Replace Resume' : 'Upload Your Resume'}
             </>
           )}
         </Button>
@@ -541,7 +561,7 @@ function ProjectsSection({ projects, addProject, updateProject, removeProject })
                   )}
                   {proj.githubLink && (
                     <a href={proj.githubLink} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-600 hover:underline flex items-center gap-1">
-                      <Github className="w-3 h-3" /> GitHub
+                      <Code className="w-3 h-3" /> GitHub
                     </a>
                   )}
                 </div>

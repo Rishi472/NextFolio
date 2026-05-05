@@ -45,11 +45,23 @@ export default function PortfolioThemeMinimal() {
       )}
 
       {resume.projects.length > 0 && (
-        <section className={`px-6 ${layoutStyle === 'compact' ? 'py-8' : 'py-12'} ${layout.inner} mx-auto border-t border-slate-200`}>
+        <section id="projects" className={`px-6 ${layoutStyle === 'compact' ? 'py-8' : 'py-12'} ${layout.inner} mx-auto border-t border-slate-200`}>
           <h2 className="text-2xl font-bold">Projects</h2>
           <div className={`mt-6 grid ${layout.grid} ${layout.gap}`}>
             {resume.projects.map((project) => (
-              <article key={project.id} className={`rounded-lg border border-slate-200 ${layout.cardPadding}`}>
+              <article 
+                key={project.id} 
+                className={`rounded-lg border border-slate-200 ${layout.cardPadding} cursor-pointer hover:shadow-lg transition-shadow`}
+                onClick={() => {
+                  if (project.githubLink) {
+                    window.open(project.githubLink, '_blank');
+                  } else if (project.demoLink) {
+                    window.open(project.demoLink, '_blank');
+                  } else if (project.link) {
+                    window.open(project.link, '_blank');
+                  }
+                }}
+              >
                 <h3 className="font-bold">{project.title}</h3>
                 {project.description && <p className="mt-2 text-sm text-slate-600">{project.description}</p>}
                 {project.link && <a className="mt-4 inline-block text-sm font-semibold text-[var(--portfolio-text)]" href={project.link} target="_blank" rel="noreferrer">View project</a>}

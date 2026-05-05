@@ -5,7 +5,7 @@ import ResumeBuilder from '../features/ResumeBuilder';
 import PortfolioPreview from '../features/PortfolioPreview';
 import ResumePreview from '../features/ResumePreview';
 import TerminalPreview from '../features/TerminalPreview';
-import PortfolioThemeSushant from '../features/themes/PortfolioThemeSushant';
+import PortfolioThemeModern from '../features/themes/PortfolioThemeModern';
 import DesignPanel from '../features/DesignPanel';
 import TopNavbar from '../components/TopNavbar';
 import ATSModal from '../components/ATSModal';
@@ -26,7 +26,7 @@ const SIDEBAR_LINKS = [
 
 const PORTFOLIO_THEMES = {
   default: PortfolioPreview,
-  modern: PortfolioThemeSushant,
+  modern: PortfolioThemeModern,
   classic: TerminalPreview,
 };
 

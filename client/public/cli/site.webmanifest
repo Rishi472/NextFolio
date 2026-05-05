@@ -1,6 +1,6 @@
 {
-  "name": "CLI Portfolio",
-  "short_name": "Portfolio",
+  "name": "CLI Portlio",
+  "short_name": "Portlio",
   "start_url": "/cli/index.html",
   "display": "standalone"
 }

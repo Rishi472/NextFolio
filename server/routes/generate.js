@@ -5,6 +5,28 @@ import { authMiddleware } from './auth.js';
 
 const router = express.Router();
 
+const cleanText = (value) => (typeof value === 'string' ? value.trim() : '');
+
+const withHttps = (value, baseUrl = '') => {
+  const text = cleanText(value);
+  if (!text) return '';
+  if (/^https?:\/\//i.test(text)) return text;
+  if (text.includes('.')) return `https://${text}`;
+  return `${baseUrl}${text.replace(/^@/, '')}`;
+};
+
+const displayUrl = (value) => cleanText(value).replace(/^https?:\/\/(www\.)?/i, '');
+
+const phoneHref = (phone) => {
+  const dialable = cleanText(phone).replace(/[^\d+]/g, '');
+  return dialable ? `tel:${dialable}` : '';
+};
+
+const contactLink = (label, value, href) => {
+  if (!value || !href) return '';
+  return `<a href="${href}" title="${label}">${value}</a>`;
+};
+
 // Helper to format text with newlines or bullet points into an HTML list
 const formatBullets = (text) => {
   if (!text) return '';
@@ -23,6 +45,14 @@ const formatBullets = (text) => {
 // Helper to clean up squashed text if title is missing
 const sanitizeProject = (proj) => {
   let { title = '', description = '', link = '', date = '' } = proj;
+  const bulletDescription = Array.isArray(proj.bulletPoints)
+    ? proj.bulletPoints.map(cleanText).filter(Boolean).join('\n')
+    : '';
+
+  description = cleanText(description || proj.summary) || bulletDescription;
+  link = cleanText(link || proj.demoLink || proj.githubLink || proj.github || proj.url);
+  date = cleanText(date || proj.timeline);
+
   if (!title && description) {
     // Attempt to parse out title and date from squashed string
     const match = description.match(/^(.*?)(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4}(.*)$/i);
@@ -57,12 +87,16 @@ const sanitizeEducation = (edu) => {
 const generateATSHTML = (resumeData, email) => {
   const { personal = {}, experience = [], education = [], projects = [], skills = [] } = resumeData;
   
+  const emailValue = personal.email || email;
+  const linkedinHref = withHttps(personal.linkedin, 'https://www.linkedin.com/in/');
+  const githubHref = withHttps(personal.github, 'https://github.com/');
+
   // Format contact info separated by |
   const contactItems = [
-    personal.phone,
-    personal.email || email,
-    personal.linkedin ? personal.linkedin.replace(/^https?:\/\/(www\.)?/, '') : null,
-    personal.github ? personal.github.replace(/^https?:\/\/(www\.)?/, '') : null
+    contactLink('Call phone number', personal.phone, phoneHref(personal.phone)),
+    contactLink('Send email', emailValue, emailValue ? `mailto:${emailValue}` : ''),
+    contactLink('Visit LinkedIn profile', personal.linkedin ? displayUrl(personal.linkedin) : '', linkedinHref),
+    contactLink('Visit GitHub profile', personal.github ? displayUrl(personal.github) : '', githubHref)
   ].filter(Boolean);
   
   const contactHTML = contactItems.join(' <span class="sep">|</span> ');
@@ -73,13 +107,12 @@ const generateATSHTML = (resumeData, email) => {
     <head>
       <meta charset="UTF-8">
       <title>${personal.fullName || 'Resume'}</title>
-      <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
       <style>
         * {
           box-sizing: border-box;
         }
         body { 
-          font-family: 'Roboto', sans-serif; 
+          font-family: Arial, Helvetica, sans-serif; 
           font-size: 10pt; 
           line-height: 1.15; 
           color: #000; 
@@ -273,8 +306,10 @@ const generateATSHTML = (resumeData, email) => {
 };
 
 router.post('/ats-resume', authMiddleware, async (req, res) => {
+  let browser;
   try {
     const { resumeData } = req.body;
+    if (!resumeData) return res.status(400).json({ message: 'No resume data provided' });
     
     // We only need the user's email as a fallback if it's not in the resumeData
     const user = await User.findByPk(req.user.id);
@@ -282,9 +317,12 @@ router.post('/ats-resume', authMiddleware, async (req, res) => {
 
     const htmlContent = generateATSHTML(resumeData, user.email);
 
-    const browser = await puppeteer.launch({ headless: 'new' });
+    browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
     const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    await page.setContent(htmlContent, { waitUntil: 'domcontentloaded' });
     
     const pdfUint8Array = await page.pdf({
       format: 'Letter',
@@ -304,6 +342,8 @@ router.post('/ats-resume', authMiddleware, async (req, res) => {
 
     res.end(pdfBuffer);
   } catch (error) {
+    if (browser) await browser.close().catch(() => {});
+    console.error('ATS resume generation failed:', error);
     res.status(500).json({ message: 'Failed to generate ATS Resume PDF', error: error.message });
   }
 });

@@ -7,9 +7,10 @@ const EMPTY_RESUME_MESSAGE = 'Please create your resume first to view portfolio'
 const COMMANDS = [
   ['show_resume', 'Display resume summary, experience, education, and projects'],
   ['show_projects', 'Display projects from your resume data'],
+  ['open_repo <number>', 'Open a project repository in a new tab'],
   ['show_skills', 'Display skills from your resume data'],
   ['show_contact', 'Display contact details from your resume data'],
-  ['ask_aryan <question>', 'Answer from your resume data only'],
+  ['ask_classic <question>', 'Answer from your resume data only'],
   ['clear', 'Clear terminal output'],
 ];
 
@@ -34,6 +35,8 @@ function normalizeResumeData(source = {}) {
     phone: valueOrBlank(source.phone || personal.phone),
     location: valueOrBlank(source.location || personal.location),
     summary: valueOrBlank(source.summary || personal.summary),
+    linkedin: valueOrBlank(source.linkedin || personal.linkedin),
+    github: valueOrBlank(source.github || personal.github),
     skills: listFrom(source.skills)
       .map((skill) => (typeof skill === 'string' ? skill.trim() : valueOrBlank(skill.name || skill.label || skill.title)))
       .filter(Boolean),
@@ -71,6 +74,15 @@ function formatDateRange(item) {
   return start || end;
 }
 
+function projectRepoLink(item = {}) {
+  const explicitRepo = valueOrBlank(item.githubLink || item.github || item.repo || item.repository || item.repositoryUrl);
+  const generalLink = valueOrBlank(item.link || item.url);
+
+  if (explicitRepo) return explicitRepo;
+  if (/github\.com/i.test(generalLink)) return generalLink;
+  return '';
+}
+
 function formatExperience(item, index) {
   const role = valueOrBlank(item.jobTitle || item.title || item.role || item.position);
   const company = valueOrBlank(item.company || item.organization || item.employer);
@@ -98,7 +110,7 @@ function formatProject(item, index) {
   const date = valueOrBlank(item.date || item.timeline);
   const type = valueOrBlank(item.type);
   const demoLink = valueOrBlank(item.demoLink || item.demo || item.link || item.url);
-  const githubLink = valueOrBlank(item.githubLink || item.github);
+  const repoLink = projectRepoLink(item);
 
   // Technologies
   let techStr = '';
@@ -116,10 +128,23 @@ function formatProject(item, index) {
     description && `   ${description}`,
     ...bullets.map((bp) => `   - ${bp}`),
     demoLink && `   Demo: ${demoLink}`,
-    githubLink && `   GitHub: ${githubLink}`,
+    repoLink && `   Repo: ${repoLink}`,
+    repoLink && `   Run: open_repo ${index + 1}`,
   ];
 
   return lines.filter(Boolean).join('\n');
+}
+
+function buildContactOutput(data) {
+  return [
+    'CONTACT',
+    line('Email', data.email),
+    line('Phone', data.phone),
+    line('LinkedIn', data.linkedin),
+    line('GitHub', data.github),
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 function buildResumeOutput(data) {
@@ -140,7 +165,7 @@ function answerFromResume(question, data) {
   const q = question.toLowerCase();
 
   if (!question.trim()) {
-    return 'Ask a question after the command. Example: ask_aryan skills';
+    return 'Ask a question after the command. Example: ask_classic skills';
   }
 
   if (q.includes('skill') || q.includes('technology') || q.includes('stack')) {
@@ -160,9 +185,7 @@ function answerFromResume(question, data) {
   }
 
   if (q.includes('contact') || q.includes('email') || q.includes('phone')) {
-    return [line('Name', data.name), line('Email', data.email), line('Phone', data.phone), line('Location', data.location)]
-      .filter(Boolean)
-      .join('\n');
+    return buildContactOutput(data);
   }
 
   if (q.includes('summary') || q.includes('about') || q.includes('bio')) {
@@ -234,6 +257,21 @@ export default function CLIPortfolio() {
             : 'No projects have been added yet.',
         });
         break;
+      case 'open_repo': {
+        const projectNumber = Number.parseInt(args[0], 10);
+        const project = normalizedResume.projects[projectNumber - 1];
+        const repoLink = projectRepoLink(project);
+
+        if (!projectNumber || !project) {
+          nextEntries.push({ type: 'error', content: 'Choose a valid project number. Example: open_repo 2' });
+        } else if (!repoLink) {
+          nextEntries.push({ type: 'error', content: `Project ${projectNumber} does not have a repository link yet.` });
+        } else {
+          window.open(repoLink, '_blank', 'noopener,noreferrer');
+          nextEntries.push({ type: 'system', content: `Opening repository for project ${projectNumber}: ${repoLink}` });
+        }
+        break;
+      }
       case 'show_skills':
         nextEntries.push({
           type: 'data',
@@ -245,18 +283,10 @@ export default function CLIPortfolio() {
       case 'show_contact':
         nextEntries.push({
           type: 'data',
-          content: [
-            'CONTACT',
-            line('Name', normalizedResume.name),
-            line('Email', normalizedResume.email),
-            line('Phone', normalizedResume.phone),
-            line('Location', normalizedResume.location),
-          ]
-            .filter(Boolean)
-            .join('\n'),
+          content: buildContactOutput(normalizedResume),
         });
         break;
-      case 'ask_aryan':
+      case 'ask_classic':
       case 'ask_ai':
         nextEntries.push({ type: 'data', content: answerFromResume(args.length ? question : '', normalizedResume) });
         break;

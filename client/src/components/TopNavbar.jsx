@@ -2,6 +2,7 @@ import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
 import { Download, LogOut, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/NextFolioLogo.png';
 
 export default function TopNavbar() {
   const { setShowATSModal, setShowPublishModal } = useUIStore();
@@ -12,16 +13,31 @@ export default function TopNavbar() {
   return (
     <div className="h-16 bg-gradient-brand flex items-center justify-between px-6 shadow-md z-50">
       {/* Left: Logo */}
-      <div className="flex items-center">
-        <h1 className="text-xl font-bold text-white tracking-wide">Nextfolio</h1>
+      <div className="group relative flex items-center" tabIndex={0} aria-label="NextFolio logo">
+        <img
+          src={logo}
+          alt="Nextfolio"
+          className="h-12 w-44 rounded-xl bg-white object-cover p-1 shadow-sm"
+        />
+        <span className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 px-3 py-2 text-xs font-bold uppercase tracking-wide text-white opacity-0 shadow-xl shadow-indigo-500/30 ring-1 ring-white/40 transition-opacity duration-200 group-hover:opacity-100 group-focus:opacity-100">
+          BUILD TODAY. IMPRESS TOMORROW.
+        </span>
       </div>
 
       {/* Center: Buttons */}
       <div className="hidden md:flex items-center gap-4">
-        <button className="text-white/80 hover:text-white font-medium px-4 py-2 rounded-full hover:bg-white/10 transition-colors">
+        <button
+          type="button"
+          onClick={() => navigate('/about')}
+          className="text-white/80 hover:text-white font-medium px-4 py-2 rounded-full hover:bg-white/10 transition-colors"
+        >
           About
         </button>
-        <button className="text-white/80 hover:text-white font-medium px-4 py-2 rounded-full hover:bg-white/10 transition-colors">
+        <button
+          type="button"
+          onClick={() => navigate('/contact')}
+          className="text-white/80 hover:text-white font-medium px-4 py-2 rounded-full hover:bg-white/10 transition-colors"
+        >
           Contact
         </button>
         {!isAuthenticated && (
