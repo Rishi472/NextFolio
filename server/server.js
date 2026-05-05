@@ -25,9 +25,22 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/generate', generateRoutes);
 
-// Sync DB and Start Server
-syncDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+const dbReady = syncDb();
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ message: 'Internal server error' });
 });
+
+if (!process.env.VERCEL) {
+  dbReady.then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  });
+}
+
+export default async function handler(req, res) {
+  await dbReady;
+  return app(req, res);
+}

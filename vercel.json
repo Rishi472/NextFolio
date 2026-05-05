@@ -1,24 +1,21 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
+  "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
+  "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
   "env": {
     "VITE_API_URL": "@api_url",
     "VITE_GOOGLE_CLIENT_ID": "@google_client_id"
   },
-  "functions": {
-    "server.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/server.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.mjs"
     },
     {
-      "src": "/(.*)",
-      "dest": "client/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
