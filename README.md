@@ -155,14 +155,15 @@ Open **two terminals**:
 ```bash
 # Terminal 1 — Start the backend
 cd server
-npm start            # or: npm run dev (with auto-reload)
+npm start            # or: npm run dev
 
 # Terminal 2 — Start the frontend
 cd client
 npm run dev
 ```
 
-The app will be available at **https://next-folio-silk.vercel.app/**
+The local app will be available at **http://localhost:5173**.
+The deployed app is available at **https://next-folio-silk.vercel.app/**.
 
 ---
 

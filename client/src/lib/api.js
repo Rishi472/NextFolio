@@ -16,3 +16,13 @@ const getDefaultApiBaseUrl = () => {
 const API_BASE_URL = (isUsableApiUrl(configuredApiUrl) ? configuredApiUrl : getDefaultApiBaseUrl()).replace(/\/$/, '');
 
 export const API_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+
+export function getApiErrorMessage(error) {
+  const message = error instanceof Error ? error.message : String(error || '');
+
+  if (/failed to fetch|networkerror|load failed/i.test(message)) {
+    return `Cannot reach the backend API at ${API_URL}. Start the server with "cd server && npm run dev" or set VITE_API_URL to your deployed API URL.`;
+  }
+
+  return message || 'Request failed. Please try again.';
+}

@@ -4,7 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
 import Input from './Input';
-import { API_URL } from '../lib/api';
+import { API_URL, getApiErrorMessage } from '../lib/api';
 import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
 
 export default function AuthModal() {
@@ -45,7 +45,7 @@ export default function AuthModal() {
       setAuth({ token: data.token, user: data.user });
       setShowAuthModal(false);
     } catch (err) {
-      setError(err.message);
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }

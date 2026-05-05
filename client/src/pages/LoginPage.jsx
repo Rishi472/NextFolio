@@ -6,7 +6,7 @@ import { useResumeStore } from '../store';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import logo from '../assets/NextFolioLogo.png';
-import { API_URL } from '../lib/api';
+import { API_URL, getApiErrorMessage } from '../lib/api';
 import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
 
 export default function LoginPage() {
@@ -51,7 +51,7 @@ export default function LoginPage() {
       setAuth({ token: data.token, user: data.user });
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
