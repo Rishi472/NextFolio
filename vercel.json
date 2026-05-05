@@ -7,7 +7,8 @@
   "env": {
     "VITE_API_URL": "@api_url",
     "VITE_GOOGLE_CLIENT_ID": "@google_client_id",
-    "VITE_ENABLE_GOOGLE_LOGIN": "@enable_google_login"
+    "VITE_ENABLE_GOOGLE_LOGIN": "@enable_google_login",
+    "VITE_APP_VERSION": "workspace-gate-v2"
   },
   "headers": [
     {

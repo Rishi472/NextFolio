@@ -12,6 +12,7 @@ import ATSModal from '../components/ATSModal';
 import AuthModal from '../components/AuthModal';
 import PublishModal from '../components/PublishModal';
 import Button from '../components/Button';
+import { APP_VERSION } from '../lib/buildInfo';
 
 const SIDEBAR_LINKS = [
   { id: 'personal', label: 'Personal Info', icon: User },
@@ -69,6 +70,9 @@ export default function MainLayout() {
             >
               Log In / Sign Up
             </Button>
+            <p className="mt-5 text-xs font-medium text-slate-400">
+              Build {APP_VERSION}
+            </p>
           </div>
         </div>
       ) : (
