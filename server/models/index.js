@@ -77,7 +77,7 @@ export const syncDb = async () => {
   try {
     // Disable foreign keys for SQLite during sync
     await sequelize.query('PRAGMA foreign_keys = OFF');
-    await sequelize.sync({ force: true }); // Use force: true to drop and recreate tables cleanly
+    await sequelize.sync();
     // Re-enable foreign keys
     await sequelize.query('PRAGMA foreign_keys = ON');
     console.log('Database synced');
