@@ -1,4 +1,4 @@
-import { Plus, Trash2, Upload, Bot, AlertCircle, Pencil, ExternalLink, Code, X } from 'lucide-react';
+import { Plus, Trash2, Upload, Bot, AlertCircle, Pencil, ExternalLink, Code, X, LockKeyhole } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useResumeStore, useUIStore } from '../store';
@@ -32,7 +32,9 @@ export default function ResumeBuilder() {
     missingKeywords
   } = useResumeStore();
 
+  const token = useResumeStore((state) => state.token);
   const activeTab = useUIStore((state) => state.activeTab);
+  const setShowAuthModal = useUIStore((state) => state.setShowAuthModal);
   const [isParsing, setIsParsing] = useState(false);
   const [isOptimizingBio, setIsOptimizingBio] = useState(false);
   const fileInputRef = useRef(null);
@@ -59,11 +61,39 @@ export default function ResumeBuilder() {
 
   // Debounced auto-save
   useEffect(() => {
+    if (!token) return undefined;
     const timer = setTimeout(() => {
       saveToDatabase();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [resumeData, saveToDatabase]);
+  }, [resumeData, saveToDatabase, token]);
+
+  if (!token) {
+    return (
+      <div className="h-full flex flex-col">
+        <Card glassy className="p-5 border-2 border-indigo-200 border-dashed bg-indigo-50/60 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white text-indigo-600 shadow-sm">
+            <LockKeyhole className="h-6 w-6" />
+          </div>
+          <h3 className="text-lg font-bold text-brand-dark">Login Required</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Log in or sign up to upload a resume and edit your portfolio details.
+          </p>
+          <Button
+            type="button"
+            onClick={() => setShowAuthModal(true)}
+            className="mt-5 w-full"
+          >
+            Log In / Sign Up
+          </Button>
+        </Card>
+
+        <div className="mt-6 flex-1 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">
+          Resume uploads and form editing are locked until authentication.
+        </div>
+      </div>
+    );
+  }
 
   const handlePersonalChange = (e) => {
     const { name, value } = e.target;

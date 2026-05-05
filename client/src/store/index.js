@@ -151,19 +151,6 @@ export const useResumeStore = create((set, get) => ({
     set({ token: null, user: null });
   },
   
-  // Login/Signup mock for easy testing
-  authenticate: async () => {
-    try {
-      const res = await fetch(`${API_URL}/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Demo User', email: `demo${Date.now()}@example.com`, password: 'password123' })
-      });
-      const data = await res.json();
-      if (data.token) get().setAuth({ token: data.token, user: data.user });
-    } catch (e) { console.error('Auth error', e); }
-  },
-
   resumeData: emptyResumeData,
 
   setResumeData: (data) => set({ resumeData: data }),
@@ -209,16 +196,11 @@ export const useResumeStore = create((set, get) => ({
 
   // API Integration: Parse Resume
   parseResume: async (file) => {
-    let { token, authenticate, targetJobDescription } = get();
+    const { token, targetJobDescription } = get();
     set({ parseResumeError: '' });
 
     if (!token) {
-      await authenticate();
-      token = get().token;
-    }
-
-    if (!token) {
-      set({ parseResumeError: 'Backend authentication failed. Please try logging in again.' });
+      set({ parseResumeError: 'Log in or sign up before uploading a resume.' });
       return false;
     }
     
