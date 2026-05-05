@@ -5,8 +5,7 @@ import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
 import Input from './Input';
 import { API_URL } from '../lib/api';
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const hasGoogleOAuth = Boolean(GOOGLE_CLIENT_ID);
+import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
 
 export default function AuthModal() {
   const { showAuthModal, setShowAuthModal } = useUIStore();
@@ -122,7 +121,7 @@ export default function AuthModal() {
   });
 
   const startGoogleLogin = () => {
-    if (!hasGoogleOAuth) return;
+    if (!HAS_GOOGLE_OAUTH) return;
     handleGoogleLogin();
   };
 
@@ -157,7 +156,7 @@ export default function AuthModal() {
             </p>
           </div>
 
-          {hasGoogleOAuth && (
+          {HAS_GOOGLE_OAUTH && (
             <>
               <button
                 onClick={startGoogleLogin}

@@ -7,8 +7,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import logo from '../assets/NextFolioLogo.png';
 import { API_URL } from '../lib/api';
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const hasGoogleOAuth = Boolean(GOOGLE_CLIENT_ID);
+import { HAS_GOOGLE_OAUTH } from '../lib/googleAuth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -127,7 +126,7 @@ export default function LoginPage() {
   });
 
   const startGoogleLogin = () => {
-    if (!hasGoogleOAuth) return;
+    if (!HAS_GOOGLE_OAUTH) return;
     handleGoogleLogin();
   };
 
@@ -164,7 +163,7 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-gray-100">
           
-          {hasGoogleOAuth && (
+          {HAS_GOOGLE_OAUTH && (
             <>
               <button
                 onClick={startGoogleLogin}

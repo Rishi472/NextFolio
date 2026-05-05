@@ -377,7 +377,8 @@ npm run build
    http://localhost:5173
    https://next-folio-silk.vercel.app
    ```
-4. Save, wait a few minutes, then retry Google login from the deployed URL.
+4. In Vercel, set `VITE_ENABLE_GOOGLE_LOGIN` to `true`.
+5. Save, redeploy, wait a few minutes, then retry Google login from the deployed URL.
 
 For Google Identity Services popup login, the origin must match the browser URL's scheme, host, and port. Vercel preview URLs are unique, so either add each preview origin you test or use the stable production/custom domain for Google sign-in testing.
 

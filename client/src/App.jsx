@@ -5,12 +5,13 @@ import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PublishedPortfolioPage from './pages/PublishedPortfolioPage';
+import { GOOGLE_CLIENT_ID } from './lib/googleAuth';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'GOOGLE_OAUTH_CLIENT_ID_NOT_CONFIGURED';
+const googleClientId = GOOGLE_CLIENT_ID || 'GOOGLE_OAUTH_CLIENT_ID_NOT_CONFIGURED';
 
 export default function App() {
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={googleClientId}>
       <Routes>
         <Route path="/" element={<MainLayout />} />
         <Route path="/about" element={<AboutPage />} />
