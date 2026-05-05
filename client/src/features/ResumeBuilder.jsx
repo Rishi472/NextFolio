@@ -33,6 +33,8 @@ export default function ResumeBuilder() {
   } = useResumeStore();
 
   const token = useResumeStore((state) => state.token);
+  const user = useResumeStore((state) => state.user);
+  const isAuthenticated = Boolean(token && user);
   const activeTab = useUIStore((state) => state.activeTab);
   const setShowAuthModal = useUIStore((state) => state.setShowAuthModal);
   const [isParsing, setIsParsing] = useState(false);
@@ -61,14 +63,14 @@ export default function ResumeBuilder() {
 
   // Debounced auto-save
   useEffect(() => {
-    if (!token) return undefined;
+    if (!isAuthenticated) return undefined;
     const timer = setTimeout(() => {
       saveToDatabase();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [resumeData, saveToDatabase, token]);
+  }, [resumeData, saveToDatabase, isAuthenticated]);
 
-  if (!token) {
+  if (!isAuthenticated) {
     return (
       <div className="h-full flex flex-col">
         <Card glassy className="p-5 border-2 border-indigo-200 border-dashed bg-indigo-50/60 text-center">

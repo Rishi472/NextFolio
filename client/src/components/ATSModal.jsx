@@ -6,13 +6,14 @@ import { API_URL } from '../lib/api';
 
 export default function ATSModal() {
   const { showATSModal, setShowATSModal } = useUIStore();
-  const { token, resumeData } = useResumeStore();
+  const { token, user, resumeData } = useResumeStore();
+  const isAuthenticated = Boolean(token && user);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingATS, setIsLoadingATS] = useState(false);
   const [atsAnalysis, setAtsAnalysis] = useState(null);
 
   useEffect(() => {
-    if (showATSModal && token) {
+    if (showATSModal && isAuthenticated) {
       const fetchATSScore = async () => {
         setIsLoadingATS(true);
         try {
@@ -34,15 +35,15 @@ export default function ATSModal() {
         setIsLoadingATS(false);
       };
       fetchATSScore();
-    } else if (showATSModal && !token) {
+    } else if (showATSModal && !isAuthenticated) {
       Promise.resolve().then(() => setAtsAnalysis({ score: 0, message: 'Please upload a resume first to get an ATS score.', improvements: [] }));
     }
-  }, [showATSModal, token, resumeData]);
+  }, [showATSModal, isAuthenticated, token, resumeData]);
 
   if (!showATSModal) return null;
 
   const handleDownload = async () => {
-    if (!token) return alert("Please upload a resume or start building one to authenticate.");
+    if (!isAuthenticated) return alert("Log in or sign up before generating an ATS resume.");
     setIsGenerating(true);
     try {
       const res = await fetch(`${API_URL}/generate/ats-resume`, {

@@ -5,7 +5,8 @@ import Card from '../components/Card';
 import { useResumeStore, useUIStore } from '../store';
 
 export default function ResumeUploadPanel() {
-  const { parseResume, resumeData, token } = useResumeStore();
+  const { parseResume, resumeData, token, user } = useResumeStore();
+  const isAuthenticated = Boolean(token && user);
   const setShowAuthModal = useUIStore((state) => state.setShowAuthModal);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function ResumeUploadPanel() {
   const [fileName, setFileName] = useState('');
 
   const handleFileChange = (e) => {
-    if (!token) {
+    if (!isAuthenticated) {
       setError('Log in or sign up before uploading a resume.');
       setShowAuthModal(true);
       e.target.value = '';
@@ -40,7 +41,7 @@ export default function ResumeUploadPanel() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!token) {
+    if (!isAuthenticated) {
       setError('Log in or sign up before uploading a resume.');
       setShowAuthModal(true);
       return;
@@ -74,7 +75,7 @@ export default function ResumeUploadPanel() {
     <div className="space-y-4">
       <Card className="p-6 border-2 border-dashed border-indigo-200 bg-indigo-50/50">
         <div className="text-center space-y-4">
-          {token ? (
+          {isAuthenticated ? (
             <Upload className="w-12 h-12 mx-auto text-indigo-600" />
           ) : (
             <LockKeyhole className="w-12 h-12 mx-auto text-indigo-600" />
@@ -82,7 +83,7 @@ export default function ResumeUploadPanel() {
           <div>
             <h3 className="text-lg font-semibold text-brand-dark">Upload Your Resume</h3>
             <p className="text-sm text-gray-600 mt-1">
-              {token ? 'PDF or text format, max 5MB' : 'Log in or sign up to upload a resume'}
+              {isAuthenticated ? 'PDF or text format, max 5MB' : 'Log in or sign up to upload a resume'}
             </p>
           </div>
 
@@ -94,9 +95,9 @@ export default function ResumeUploadPanel() {
                   accept=".pdf,.txt"
                   onChange={handleFileChange}
                   className="hidden"
-                  disabled={loading || !token}
+                  disabled={loading || !isAuthenticated}
                 />
-                <span className={`inline-block px-6 py-3 rounded-lg transition-colors ${token ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-200 text-slate-500 cursor-not-allowed'}`}>
+                <span className={`inline-block px-6 py-3 rounded-lg transition-colors ${isAuthenticated ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-200 text-slate-500 cursor-not-allowed'}`}>
                   Choose PDF
                 </span>
               </label>
@@ -110,7 +111,7 @@ export default function ResumeUploadPanel() {
 
             <Button
               type="submit"
-              disabled={!token || !file || loading}
+              disabled={!isAuthenticated || !file || loading}
               className="w-full"
             >
               {loading ? (

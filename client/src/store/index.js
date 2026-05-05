@@ -18,6 +18,15 @@ const writeStoredJson = (key, value) => {
   }
 };
 
+const storedToken = localStorage.getItem('nextfolio_token');
+const storedUser = readStoredJson('nextfolio_user');
+const hasStoredAuth = Boolean(storedToken && storedUser);
+
+if (!hasStoredAuth) {
+  localStorage.removeItem('nextfolio_token');
+  localStorage.removeItem('nextfolio_user');
+}
+
 const emptyResumeData = {
   personal: {
     fullName: '',
@@ -123,8 +132,8 @@ const normalizeParsedResume = (parsed = {}, current = emptyResumeData) => {
 };
 
 export const useResumeStore = create((set, get) => ({
-  token: localStorage.getItem('nextfolio_token'),
-  user: readStoredJson('nextfolio_user'),
+  token: hasStoredAuth ? storedToken : null,
+  user: hasStoredAuth ? storedUser : null,
   isSaving: false,
   parseResumeError: '',
   targetJobDescription: '',
@@ -196,10 +205,10 @@ export const useResumeStore = create((set, get) => ({
 
   // API Integration: Parse Resume
   parseResume: async (file) => {
-    const { token, targetJobDescription } = get();
+    const { token, user, targetJobDescription } = get();
     set({ parseResumeError: '' });
 
-    if (!token) {
+    if (!token || !user) {
       set({ parseResumeError: 'Log in or sign up before uploading a resume.' });
       return false;
     }
@@ -272,8 +281,8 @@ export const useResumeStore = create((set, get) => ({
   },
 
   optimizeBio: async () => {
-    let { token, resumeData, updatePersonal } = get();
-    if (!token) return false;
+    let { token, user, resumeData, updatePersonal } = get();
+    if (!token || !user) return false;
     
     try {
       const res = await fetch(`${API_URL}/ai/optimize-bio`, {
@@ -297,8 +306,8 @@ export const useResumeStore = create((set, get) => ({
 
   // API Integration: Save to DB
   saveToDatabase: async () => {
-    let { token, resumeData } = get();
-    if (!token) return;
+    let { token, user, resumeData } = get();
+    if (!token || !user) return;
     
     set({ isSaving: true });
     try {

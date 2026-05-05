@@ -8,7 +8,7 @@ export default function TopNavbar() {
   const { setShowATSModal, setShowPublishModal } = useUIStore();
   const { user, token, logout } = useResumeStore();
   const navigate = useNavigate();
-  const isAuthenticated = Boolean(token || user);
+  const isAuthenticated = Boolean(token && user);
 
   return (
     <div className="h-16 bg-gradient-brand flex items-center justify-between px-6 shadow-md z-50">
