@@ -9,6 +9,7 @@ import { normalizeResumeForPortfolio } from '../features/themes/resumeThemeData'
 const CONTACT_DETAILS = {
   name: 'Rishi Singh Shandilya',
   email: 'rishisingh.shandilya@gmail.com',
+  phone: '9939587249',
   github: 'github.com/Rishi472',
   linkedin: 'linkedin.com/in/rishisinghshandilya',
 };
@@ -59,6 +60,7 @@ export default function ContactPage() {
     ...resume,
     name: CONTACT_DETAILS.name,
     email: CONTACT_DETAILS.email,
+    phone: CONTACT_DETAILS.phone,
     github: CONTACT_DETAILS.github,
     linkedin: CONTACT_DETAILS.linkedin,
   };
