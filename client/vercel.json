@@ -5,6 +5,17 @@
     "VITE_GOOGLE_CLIENT_ID": "@google_client_id",
     "VITE_ENABLE_GOOGLE_LOGIN": "@enable_google_login"
   },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Menu, X, User, AlignLeft, GraduationCap, Briefcase, FolderDot, Code, Trophy, BadgeCheck, Maximize2 } from 'lucide-react';
-import { useUIStore } from '../store';
+import { Menu, X, User, AlignLeft, GraduationCap, Briefcase, FolderDot, Code, Trophy, BadgeCheck, Maximize2, LockKeyhole } from 'lucide-react';
+import { useResumeStore, useUIStore } from '../store';
 import ResumeBuilder from '../features/ResumeBuilder';
 import PortfolioPreview from '../features/PortfolioPreview';
 import ResumePreview from '../features/ResumePreview';
@@ -31,7 +31,10 @@ const PORTFOLIO_THEMES = {
 };
 
 export default function MainLayout() {
-  const { activeTab, setActiveTab, sidebarOpen, setSidebarOpen, previewMode, setPreviewMode, theme } = useUIStore();
+  const { activeTab, setActiveTab, sidebarOpen, setSidebarOpen, previewMode, setPreviewMode, theme, setShowAuthModal } = useUIStore();
+  const token = useResumeStore((state) => state.token);
+  const user = useResumeStore((state) => state.user);
+  const isAuthenticated = Boolean(token && user);
   const ActivePortfolioTheme = PORTFOLIO_THEMES[theme] || PortfolioPreview;
   const [portfolioFullscreen, setPortfolioFullscreen] = useState(false);
 
@@ -49,7 +52,26 @@ export default function MainLayout() {
       {/* Top Navbar */}
       <TopNavbar />
 
-      {/* Main Content Body */}
+      {!isAuthenticated ? (
+        <div className="flex-1 overflow-hidden bg-slate-50 px-6 py-8">
+          <div className="mx-auto flex h-full max-w-2xl flex-col items-center justify-center text-center">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white text-indigo-600 shadow-soft-md">
+              <LockKeyhole className="h-8 w-8" />
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-950">Log in to build your resume</h1>
+            <p className="mt-3 max-w-lg text-base leading-7 text-slate-600">
+              Resume uploads, form editing, ATS generation, design tools, and publishing are available after you log in or create an account.
+            </p>
+            <Button
+              type="button"
+              onClick={() => setShowAuthModal(true)}
+              className="mt-6 px-8"
+            >
+              Log In / Sign Up
+            </Button>
+          </div>
+        </div>
+      ) : (
       <div className="flex-1 flex overflow-hidden relative">
         
         {/* Sidebar */}
@@ -188,6 +210,7 @@ export default function MainLayout() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Modals */}
       {portfolioFullscreen && (
