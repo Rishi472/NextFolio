@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/dist",
+  "env": {
+    "VITE_API_URL": "@api_url",
+    "VITE_GOOGLE_CLIENT_ID": "@google_client_id"
+  },
+  "functions": {
+    "server.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/dist/index.html"
+    }
+  ]
+}
