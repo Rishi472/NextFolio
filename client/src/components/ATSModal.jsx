@@ -2,6 +2,7 @@ import { X, FileText, Download, CheckCircle, AlertTriangle, Loader2 } from 'luci
 import { useState, useEffect } from 'react';
 import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
+import { API_URL } from '../lib/api';
 
 export default function ATSModal() {
   const { showATSModal, setShowATSModal } = useUIStore();
@@ -15,7 +16,7 @@ export default function ATSModal() {
       const fetchATSScore = async () => {
         setIsLoadingATS(true);
         try {
-          const res = await fetch('http://localhost:5000/api/ai/ats-score', {
+          const res = await fetch(`${API_URL}/ai/ats-score`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ export default function ATSModal() {
     if (!token) return alert("Please upload a resume or start building one to authenticate.");
     setIsGenerating(true);
     try {
-      const res = await fetch('http://localhost:5000/api/generate/ats-resume', {
+      const res = await fetch(`${API_URL}/generate/ats-resume`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

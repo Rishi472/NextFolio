@@ -1,7 +1,5 @@
 import { create } from 'zustand';
-
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-const API_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+import { API_URL } from '../lib/api';
 
 const readStoredJson = (key) => {
   try {
@@ -220,7 +218,7 @@ export const useResumeStore = create((set, get) => ({
     }
 
     if (!token) {
-      set({ parseResumeError: 'Backend authentication failed. Make sure the server is running on port 5000.' });
+      set({ parseResumeError: 'Backend authentication failed. Please try logging in again.' });
       return false;
     }
     

@@ -4,9 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useUIStore, useResumeStore } from '../store';
 import Button from './Button';
 import Input from './Input';
-
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-const API_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+import { API_URL } from '../lib/api';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const hasGoogleOAuth = Boolean(GOOGLE_CLIENT_ID);
 

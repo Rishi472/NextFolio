@@ -6,9 +6,7 @@ import { useResumeStore } from '../store';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import logo from '../assets/NextFolioLogo.png';
-
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
-const API_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+import { API_URL } from '../lib/api';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const hasGoogleOAuth = Boolean(GOOGLE_CLIENT_ID);
 
