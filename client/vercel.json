@@ -1,5 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "env": {
+    "VITE_API_URL": "@api_url",
+    "VITE_GOOGLE_CLIENT_ID": "@google_client_id"
+  },
   "rewrites": [
     {
       "source": "/(.*)",

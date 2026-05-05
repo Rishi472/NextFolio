@@ -367,6 +367,20 @@ npm run build
 /* /index.html 200
 ```
 
+### Issue: Google login shows `Error 400: origin_mismatch`
+**Solution**: Register the deployed frontend origin on the OAuth client used by `VITE_GOOGLE_CLIENT_ID`.
+
+1. Open Google Cloud Console -> APIs & Services -> Credentials.
+2. Select the OAuth 2.0 Client ID used in Vercel.
+3. Under **Authorized JavaScript origins**, add each frontend origin exactly, without a path:
+   ```text
+   http://localhost:5173
+   https://next-folio-silk.vercel.app
+   ```
+4. Save, wait a few minutes, then retry Google login from the deployed URL.
+
+For Google Identity Services popup login, the origin must match the browser URL's scheme, host, and port. Vercel preview URLs are unique, so either add each preview origin you test or use the stable production/custom domain for Google sign-in testing.
+
 ### Issue: CSS not loading
 - Check Tailwind build output
 - Verify CSS file size in dist/
