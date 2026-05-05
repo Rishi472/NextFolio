@@ -162,7 +162,7 @@ cd client
 npm run dev
 ```
 
-The app will be available at **http://localhost:5173**
+The app will be available at **https://next-folio-silk.vercel.app/**
 
 ---
 
